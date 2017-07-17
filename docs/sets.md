@@ -82,7 +82,7 @@ data は型を定義するもので、集合を定義するものではありま
 ## Definition of ℕ
 
 ペアノの公理に基づいて自然数 ℕ を定義します。
-```
+```agda
 data ℕ : Set where
   zero :      ℕ
   suc  : ℕ → ℕ
@@ -91,16 +91,19 @@ zero は 0 を、suc は自然数 n の後者(successor)を表すコンストラ
 suc : ℕ → ℕ は ℕ 型の要素をとって ℕ 型の要素を返すコンストラクタを表しています。
 
 Agda 上の項と数値表現の対応は以下のようになります。
+
 | 項 | 数値表現 |
+|----|----------|
 | zero | 0 |
 | suc zero | 1 |
 | suc (suc zero) | 2 |
 | suc (suc (suc zero)) | 3 |
 | ... | ... |
+
 Emacs の agda2-infer-type-maybe-toplevel (C-c C-d) コマンドを使うと、与えた項の型を確認することができます。
 
 自然数には、以下のような ℕ とは別の表現を考えることもできます。
-```
+```agda
 data ℕ⁺ : Set where
   one      :      ℕ⁺
   double   : ℕ⁺ → ℕ⁺
@@ -114,7 +117,9 @@ data ℕ₂ : Set where
 曖昧にならない場合に限り、同じ名前のコンストラクタを複数の型で定義することができます(どういう場合に曖昧になるんですかね？)。
 
 ℕ と ℕ₂ は同型で、以下のような対応関係があります。
+
 | ℕ | ℕ₂ |
+|---|----|
 | zero | zero |
 | suc zero | id one |
 | suc (suc zero) | id (double one) |
@@ -129,7 +134,7 @@ data ℕ₂ : Set where
 
 ## Binary trees
 節点が値を持たない二分木は以下のように定義できます。
-```
+```agda
 data BinTree : Set where
   leaf : BinTree
   node : BinTree → BinTree → BinTree
@@ -137,7 +142,7 @@ data BinTree : Set where
 
 TODO 図を入れる
 
-```
+```agda
 leaf
 node leaf leaf
 node (node leaf leaf) leaf
@@ -146,7 +151,7 @@ node (node leaf leaf) (node leaf leaf)
 ```
 
 同様に、葉のみが自然数をラベルに持つ二分木は以下のように定義できます。
-```
+```agda
 data BinTreeℕ : Set where
   leaf : ℕ -> BinTreeℕ
   node : BinTreeℕ -> BinTreeℕ -> BinTreeℕ
@@ -158,7 +163,7 @@ data BinTreeℕ : Set where
 定数の定義の前の行に (定数名) : (型) の形式で定数の型を明示しています。
 型は曖昧にならない範囲で省略することができます。
 
-```
+```agda
 nine : ℕ
 nine = suc (suc (suc (suc (suc (suc (suc (suc (suc zero))))))))
 
@@ -184,7 +189,7 @@ ten = suc nine
 Data.Nat モジュールから `ℕ, zero, suc` を import することで、
 型とコンストラクタを利用できるようになります。
 
-```
+```agda
 open import Data.Nat public using (ℕ; zero; suc)
 
 three : ℕ
@@ -200,10 +205,10 @@ three' = suc (suc (suc zero))
 # Infix Notation
 
 ここまでの例では、コンストラクタは前置の演算子として定義されていました。
-agda では中置のコンストラクタを定義することが可能です。
+agda では中置のコンストラクタを定義することも可能です。
 もっと言えば後置や3つ以上の項を取る演算子としても定義可能です。
 
-```
+```agda
 data BinTree' : Set where
   x : BinTree'
   _+_ : BinTree' → BinTree' → BinTree'
@@ -230,7 +235,7 @@ infixr 3 _+_
 
 型の定義を行う前に型の宣言を先行して行うことで、相互再帰的な型を定義することができます。
 
-```
+```agda
 data L : Set
 data M : Set
 
@@ -263,7 +268,7 @@ L₂ = (suc zero) ∷ R₁
 2つのコンストラクタ `nil` と `_,_` を持ち、
 その要素は `t1 , t2 , ... , tn , nil` の形式で表されます (`t1` ... `tn` は `Tree` の要素)。
 
-```
+```agda
 data Tree : Set
 data Children : Set
 
@@ -294,7 +299,7 @@ tree2 = node (tree1 , node nil , tree1 , nil)
 Agda のデータ型はパラメータを取ることができます。
 データ型の宣言で、データ型名の後、コロンの前にパラメータを指定できます。
 
-```
+```agda
 data List (A : Set) : Set where
   []  : List A
   _∷_ : A → List A → List A
@@ -304,12 +309,12 @@ infixr 5 _∷_
 
 `A` および `List A` は Set の要素で、 `A` は `List A` のパラメータです。
 `List A` は `A` 型の要素を持つリストとみなすことができます。
-例えば `List Bool` の要素は `true ∷ []` や `false ∷ false ∷ []` などのようなリストです。
-そしてそれぞれのリストは `Bool` 型の値を要素としています。
+例えば `List Bool` の要素は `true ∷ []` や `false ∷ false ∷ []` などのリストです。
+それぞれのリストは `Bool` 型の値を要素としています。
 
 ## Cartesian Product 
 
-```
+```agda
 data _×_ (A B : Set) : Set where
   _,_ : A → B → A × B
 
@@ -318,10 +323,10 @@ infixr 2 _×_
 ```
 
 `A × B` は Set `A` と `B` の直積集合を表します。
-`a , b` は `A × B` の要素です。ただし `a` ∈ `A` かつ `b` ∈ `B` です。
+`a , b` は `A × B` の要素です (`a` ∈ `A` かつ `b` ∈ `B`)。
 例えば `Bool × Bool` の要素は以下の4つになります。
 
-```
+```agda
 true , true
 true , false
 false , true
@@ -333,21 +338,23 @@ false , false
 `data _×_ (A : Set) (B : Set)` と等価です。
 
 
+<!--
 ## Disjoint Union
 
-```
+```agda
 data _⊎_ (A B : Set) : Set where
   inj₁ : A → A ⊎ B
   inj₂ : B → A ⊎ B
 
 infixr 1 _⊎_
 ```
+-->
 
 ## Mutually recursive sets
 
 もちろん相互再帰で定義される型もパラメータを持つことができます。
 
-```
+```agda
 data List₁ (A B : Set) : Set
 data List₂ (A B : Set) : Set
 
@@ -360,21 +367,28 @@ data List₂ (A B : Set) where
 
 ```
 
-TODO 具体的な値を示す
+ちなみに以下のような非正規再帰型 (non-regular recursive type) でも同様に定義することができます。
 
-## Non-regular recursive set
-
-```
+```agda
 data AlterList (A B : Set) : Set  where
   []  :                     AlterList A B
   _∷_ : A → AlterList B A → AlterList A B
 ```
 
-TODO 説明する
+### Exercise: `List₁ ⊤ Bool` の最も小さい最初の5要素を示せ
+「最も小さい」の定義は、構成する項数が最も少ないもの、と解釈。
+```agda
+[]
+true :: tt :: []
+false :: tt :: []
+true :: tt :: true :: tt :: []
+true :: tt :: false :: tt :: []
+```
 
+<!--
 ## Nested set
 
-```
+```agda
 data T4 (A : Set) : Set where
   quad : A → A → A → A → T4 A
 
@@ -384,3 +398,4 @@ data Square (A : Set) : Set where
 ```
 
 TODO 説明する
+-->
