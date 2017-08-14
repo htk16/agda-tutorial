@@ -399,3 +399,86 @@ data Square (A : Set) : Set where
 
 TODO 説明する
 -->
+
+# Indexed Sets
+
+Agda のデータ型は型パラメータを取ることができます。
+この型パラメータは値にデータ型だけでなく、
+
+## Fin, family of finite sets
+
+集合 ℕ で添字づけられた集合族 `Fin` を考えます。
+ここで `Fin n (n ∈ ℕ)` は `n` 個の要素を持つ集合とします。
+例えば `Fin 0, Fin 1, ...` は以下のような集合と同型です。
+
+| `n` | `n` 個の要素を持つ集合 |
+|-----|------------------------|
+| `0` | `Fin 0 ~ ⊥` |
+| `1` | `Fin 1 ~ ⊤ ~ Maybe ⊥ ~ ⊤ ⊎ ⊥` |
+| `2`  | `Fin 2 ~ Bool ~ Maybe ⊤ ~ Maybe (Maybe ⊥) ~ ⊤ ⊎ ⊤ ⊎ ⊥ ` |
+| `3`  | `Fin 3 ~ Maybe Bool ~ Maybe (Maybe (Maybe ⊥)) ~ ⊤ ⊎ ⊤ ⊎ ⊤ ⊎ ⊥ ` |
+| `4` |  `Fin 4 ~ Maybe (Maybe (Maybe (Maybe ⊥))) ~ ⊤ ⊎ ⊤ ⊎ ⊤ ⊎ ⊤ ⊎ ⊥ ` |
+| ...  | ... |
+
+なお、 `Maybe` , `⊤` , `⊥` , `⊎` の定義は以下のとおりです。
+
+```agda
+data Maybe (A : Set) : Set where
+  none : Maybe A
+  some : A -> Maybe A
+  
+data ⊤ : Set where
+  tt : ⊤
+  
+data ⊥ : Set where
+
+data _⨄_ (A B : Set) : Set where
+  inj₁ : A -> A ⨄ B
+  inj₂ : B -> A ⨄ B
+
+infixr 1 _⨄_
+```
+
+## Definition of Fin
+
+Agda 上で `Fin` を定義してみる。
+
+```agda
+data Fin : ℕ → Set where
+  zero : (n : ℕ) → Fin (suc n)
+  suc  : (n : ℕ) → Fin n → Fin (suc n)
+```
+
+(データ型 `Fin` は型パラメータとして `ℕ` 型を1つ取り、 `Set` の要素を返す)
+`Fin n` は `n` 個の要素を持つ集合です。
+
+|         |      |
+|---------|------|
+| `Fin 0` | `{}` |
+| `Fin 1` | `{zero 0}` |
+| `Fin 2` | `{zero 1, suc 1 (zero 0)}` |
+| `Fin 3` | `{zero 2, suc 2 (zero 1), suc 2 (suc 1 (zero 0))}` |
+| `Fin 4` | `{zeor 3, suc 3 (zero 2), suc 3 (suc 2 (zero 1)), suc 3 (suc 2 (suc 1 (zero 0)))}` |
+| ... | ... |
+
+TODO: 依存型に触れる
+
+### Exercise
+
+TODO: なんか一つ触れる
+
+## Vec A n ~ An
+
+`Vec A n` は A 型の要素をもつ `n` つ組 (n-tuple) です。
+
+```agda
+data Vec (A : Set) : ℕ → Set where
+  []  : Vec A zero
+  cons : (n : ℕ) → A → Vec A n → Vec A (suc n)
+```
+
+# Term Inference and Implicit Arguments
+
+# Propositions
+
+# Parametric vs. Indices
